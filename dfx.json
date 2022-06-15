@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "dfx": "0.9.3",
+  "canisters": {
+    "vfs": {
+      "type": "rust",
+      "package": "vfs",
+      "candid": "src/vfs/vfs.did"
+    },
+    "vfs_assets": {
+      "type": "assets",
+      "source": [
+        "src/vfs_assets/assets"
+      ],
+      "dependencies": [
+        "vfs"
+      ]
+    }
+  },
+  "defaults": {
+    "build": {
+      "packtool": "",
+      "args": ""
+    }
+  },
+  "networks": {
+    "local": {
+      "bind": "127.0.0.1:8000",
+      "type": "ephemeral"
+    }
+  }
+}
