@@ -1,5 +1,5 @@
 [package]
-name = "ic-vfs"
+name = "vfs"
 version = "0.1.0"
 edition = "2018"
 
@@ -12,4 +12,5 @@ crate-type = ["cdylib"]
 candid = "0.7.4"
 ic-cdk = "0.4"
 ic-cdk-macros = "0.4"
-vfs = { version = "0.7.1"}
+time = { version = "0.3" }
+fatfs = { git = "https://github.com/rafalh/rust-fatfs", rev = "87fc1ed5074a32b4e0344fcdde77359ef9e75432" }
