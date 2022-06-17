@@ -1,5 +1,12 @@
+#![feature(read_buf)]
+#![feature(result_flatting)]
+
 use ic_cdk_macros::{query, update};
 use std::io::{Read, Write};
+
+mod time_provider;
+mod stable_memory;
+mod internal;
 
 #[cfg(target_arch = "wasm32")]
 use std::convert::TryInto;
@@ -10,23 +17,23 @@ use std::convert::TryInto;
 //     fatfs::LossyOemCpConverter,
 // >;
 type FileSystem = fatfs::FileSystem<
-    fatfs::StdIoWrapper<create::StableMemory>,
-    crate::TimeProvider,
+    fatfs::StdIoWrapper<stable_memory::StableMemory>,
+    time_provider::TimeProvider,
     fatfs::LossyOemCpConverter,
 >;
 
 type Dir<'a> = fatfs::Dir<
     'a,
-    fatfs::StdIoWrapper<create::StableMemory>,
-    crate::TimeProvider,
+    fatfs::StdIoWrapper<stable_memory::StableMemory>,
+    time_provider::TimeProvider,
     fatfs::LossyOemCpConverter,
 >;
 
 thread_local! {
     // static STABLE_MEMORY: std::cell::RefCell<fscommon::BufStream<create::StableMemory>>
     //     = std::cell::RefCell::new(fscommon::BufStream::new(create::StableMemory::default()));
-    static STABLE_MEMORY: std::cell::RefCell<create::StableMemory>
-        = std::cell::RefCell::new(create::StableMemory::default());
+    static STABLE_MEMORY: std::cell::RefCell<stable_memory::StableMemory>
+        = std::cell::RefCell::new(stable_memory::StableMemory::default());
 
     static FS: std::cell::RefCell<FileSystem> = {
         let fs: std::io::Result<FileSystem> = STABLE_MEMORY.with(|stable_memory| {
@@ -40,7 +47,7 @@ thread_local! {
             #[cfg(not(target_arch = "wasm32"))]
             let memory_pages = 19;
 
-            create::StableMemory::grow(memory_pages)?;
+            stable_memory::StableMemory::grow(memory_pages)?;
 
             // TODO
             // let stable_memory = fscommon::BufStream::new(stable_memory);
@@ -51,7 +58,7 @@ thread_local! {
             )?;
 
             let options = fatfs::FsOptions::new()
-                .time_provider(create::TimeProvider::new())
+                .time_provider(time_provider::TimeProvider::new())
                 .update_accessed_date(true);
 
             let fs = fatfs::FileSystem::new(stable_memory, options)?;

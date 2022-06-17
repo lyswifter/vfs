@@ -1,6 +1,9 @@
 // Copied from: https://github.com/rust-lang/rust/blob/a2af9cf1cf6ccb195eae40cdd793939bc77e7e73/library/std/src/io/mod.rs#L356
 // This may be avoidable in future: https://github.com/rust-lang/rfcs/pull/1210
-pub (crate) fn default_read_to_end<R: std::io::Read + ?Sized>(r: &mut R, buf: &mut Vec<u8>) -> std::io::Result<usize> {
+
+use std::io::BufRead::read_buf;
+
+pub(crate) fn default_read_to_end<R: Read + ?Sized>(r: &mut R, buf: &mut Vec<u8>) -> Result<usize> {
     let start_len = buf.len();
     let start_cap = buf.capacity();
 
@@ -10,7 +13,7 @@ pub (crate) fn default_read_to_end<R: std::io::Read + ?Sized>(r: &mut R, buf: &m
             buf.reserve(32); // buf is full, need more space
         }
 
-        let mut read_buf = std::io::ReadBuf::uninit(buf.spare_capacity_mut());
+        let mut read_buf = ReadBuf::uninit(buf.spare_capacity_mut());
 
         // SAFETY: These bytes were initialized but not filled in the previous loop
         unsafe {
@@ -19,7 +22,7 @@ pub (crate) fn default_read_to_end<R: std::io::Read + ?Sized>(r: &mut R, buf: &m
 
         match r.read_buf(&mut read_buf) {
             Ok(()) => {}
-            Err(e) if e.kind() == std::io::ErrorKind::Interrupted => continue,
+            Err(e) if e.kind() == ErrorKind::Interrupted => continue,
             Err(e) => return Err(e),
         }
 
@@ -50,7 +53,7 @@ pub (crate) fn default_read_to_end<R: std::io::Read + ?Sized>(r: &mut R, buf: &m
                         buf.extend_from_slice(&probe[..n]);
                         break;
                     }
-                    Err(ref e) if e.kind() == std::io::ErrorKind::Interrupted => continue,
+                    Err(ref e) if e.kind() == ErrorKind::Interrupted => continue,
                     Err(e) => return Err(e),
                 }
             }

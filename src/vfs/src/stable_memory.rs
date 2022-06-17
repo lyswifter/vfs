@@ -4,6 +4,7 @@ use ic_cdk::api::stable::{
     stable64_read, stable64_write, StableMemoryError,
 };
 use std::io;
+use crate::internal;
 
 const WASM_PAGE_SIZE_IN_BYTES: u64 = 64 * 1024; // 64KB
 
@@ -56,7 +57,7 @@ pub fn read(stable_memory: &mut StableMemory, buf: &mut [u8]) -> Result<usize, S
         if offset <= capacity {
             &mut buf[..capacity - offset]
         } else {
-            return Err(StableMemoryError::OutOfBounds);
+            return Err(StableMemoryError());
         }
     } else {
         buf
@@ -78,7 +79,7 @@ fn seek(stable_memory: &mut StableMemory, pos: io::SeekFrom) -> Result<u64, Stab
                 set_offset(stable_memory, new_offset as usize);
                 Ok(get_offset(stable_memory) as u64)
             } else {
-                Err(StableMemoryError::OutOfBounds)
+                Err(StableMemoryError())
             }
         }
         io::SeekFrom::Current(current) => {
@@ -87,7 +88,7 @@ fn seek(stable_memory: &mut StableMemory, pos: io::SeekFrom) -> Result<u64, Stab
                 set_offset(stable_memory, new_offset as usize);
                 Ok(get_offset(stable_memory) as u64)
             } else {
-                Err(StableMemoryError::OutOfBounds)
+                Err(StableMemoryError())
             }
         }
     }
@@ -111,7 +112,7 @@ pub fn write(stable_memory: &mut StableMemory, buf: &[u8]) -> Result<usize, Stab
         if offset <= capacity {
             &buf[..capacity - offset]
         } else {
-            return Err(StableMemoryError::OutOfBounds);
+            return Err(StableMemoryError());
         }
     } else {
         buf
@@ -156,17 +157,17 @@ impl Default for StableMemory {
 
 impl std::io::Read for StableMemory {
     fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
-        read(self, buf).map_err(|e| io::Error::new(io::ErrorKind::Other, e))
+        read(self, buf).map_err(|e| io::Error::new(io::ErrorKind::Other, "oh no"))
     }
 
     fn read_to_end(&mut self, buf: &mut Vec<u8>) -> std::io::Result<usize> {
-        crate::internal::default_read_to_end(self, buf).or(Ok(0)) // Read defines EOF to be success
+        internal::default_read_to_end(self, buf).or(Ok(0)) // Read defines EOF to be success
     }
 }
 
 impl std::io::Write for StableMemory {
     fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
-        write(self, buf).map_err(|e| io::Error::new(io::ErrorKind::OutOfMemory, e))
+        write(self, buf).map_err(|e| io::Error::new(io::ErrorKind::OutOfMemory, "oh no"))
     }
 
     fn flush(&mut self) -> std::io::Result<()> {
