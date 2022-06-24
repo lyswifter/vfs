@@ -3,6 +3,7 @@ use std::io::{Read, Write};
 
 mod time_provider;
 mod stable_memory;
+// mod init;
 
 #[cfg(target_arch = "wasm32")]
 use std::convert::TryInto;
@@ -181,4 +182,11 @@ fn write_file(path: String, contents: String) {
         std::io::Result::Ok(())
     })
     .unwrap()
+}
+
+#[update]
+fn init(path: String) {
+    // let arg = init::Args{
+
+    // };
 }
