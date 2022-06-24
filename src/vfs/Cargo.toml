@@ -15,10 +15,12 @@ crate-type = ["cdylib"]
 # log = "0.4.8"
 # libgit2-sys = { path = "../libgit2-sys", version = "0.13.4" }
 
+gitoxide-core = "0.14.0"
+
 candid = "0.7.4"
 ic-cdk = "0.4"
 ic-cdk-macros = "0.4"
 time = { version = "0.3" }
 fatfs = { git = "https://github.com/rafalh/rust-fatfs", rev = "87fc1ed5074a32b4e0344fcdde77359ef9e75432" }
 
-git2 = { version = "0.14" }
+# git2 = { git = "https://github.com/lyswifter/git2-rs.git", rev = "4e9ce10f8f76fdb8ba87a78308e8021f4a2ca597" }
