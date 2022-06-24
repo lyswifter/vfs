@@ -1,6 +1,3 @@
-// #![feature(read_buf)]
-// #![feature(result_flatting)]
-
 use ic_cdk_macros::{query, update};
 use std::io::{Read, Write};
 

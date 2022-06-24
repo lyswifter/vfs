@@ -1,5 +1,3 @@
-// Based on https://github.com/dfinity/cdk-rs/blob/a253119adb08929b6304d007ee0a6a37960656ed/src/ic-cdk/src/api/stable.rs
-// * Supports 64-bit addressed memory
 use ic_cdk::api::stable::{
     stable64_read, stable64_write, StableMemoryError,
 };
@@ -158,10 +156,6 @@ impl std::io::Read for StableMemory {
     fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
         read(self, buf).map_err(|e| io::Error::new(io::ErrorKind::Other, "oh no"))
     }
-
-    // fn read_to_end(&mut self, buf: &mut Vec<u8>) -> std::io::Result<usize> {
-    //     internal::default_read_to_end(self, buf).or(Ok(0)) // Read defines EOF to be success
-    // }
 }
 
 impl std::io::Write for StableMemory {
