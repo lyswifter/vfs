@@ -1,12 +1,11 @@
-#![feature(read_buf)]
-#![feature(result_flatting)]
+// #![feature(read_buf)]
+// #![feature(result_flatting)]
 
 use ic_cdk_macros::{query, update};
 use std::io::{Read, Write};
 
 mod time_provider;
 mod stable_memory;
-mod internal;
 
 #[cfg(target_arch = "wasm32")]
 use std::convert::TryInto;
@@ -155,7 +154,7 @@ fn mkdir(path: String) {
         dir.create_dir(&dir_name)?;
         std::io::Result::Ok(())
     })
-        .unwrap()
+    .unwrap()
 }
 
 #[update]

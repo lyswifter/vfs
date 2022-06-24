@@ -4,7 +4,6 @@ use ic_cdk::api::stable::{
     stable64_read, stable64_write, StableMemoryError,
 };
 use std::io;
-use crate::internal;
 
 const WASM_PAGE_SIZE_IN_BYTES: u64 = 64 * 1024; // 64KB
 
@@ -160,9 +159,9 @@ impl std::io::Read for StableMemory {
         read(self, buf).map_err(|e| io::Error::new(io::ErrorKind::Other, "oh no"))
     }
 
-    fn read_to_end(&mut self, buf: &mut Vec<u8>) -> std::io::Result<usize> {
-        internal::default_read_to_end(self, buf).or(Ok(0)) // Read defines EOF to be success
-    }
+    // fn read_to_end(&mut self, buf: &mut Vec<u8>) -> std::io::Result<usize> {
+    //     internal::default_read_to_end(self, buf).or(Ok(0)) // Read defines EOF to be success
+    // }
 }
 
 impl std::io::Write for StableMemory {

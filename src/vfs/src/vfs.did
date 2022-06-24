@@ -1,7 +1,0 @@
-service : {
-  cat : (path : text) -> (text) query;
-  ls : (path : text) -> (vec text) query;
-  mkdir : (path : text) -> ();
-  rm : (path : text) -> ();
-  write_file : (path : text, contents : text) -> ();
-}
